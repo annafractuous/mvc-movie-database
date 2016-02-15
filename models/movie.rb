@@ -10,15 +10,19 @@ class Movie
     @@all
   end
 
+# returns a movie object
+  def self.find_by_title(title)
+    self.all.detect { |movie| movie.title == title }
+  end
+
 # Movie.find_by("actors", "Emile Hirsch")
 # returns an array
   def self.search_by(aspect, name)
     self.all.select { |movie| movie.send(aspect).include?(name) }
   end
 
-# returns a movie object
-  def self.find_by_title(title)
-    self.all.detect { |movie| movie.title == title }
+  def self.cross_reference(aspect1, name1, aspect2, name2)
+    self.search_by(aspect1, name1) & self.search_by(aspect2, name2)
   end
 
   def self.find_incomplete

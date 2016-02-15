@@ -17,6 +17,8 @@ def movie_help
   puts "   – Movie.search_by(\"director\",\"Wes Anderson\")"
   puts "   – Movie.search_by(\"actors\",\"Bill Murray\")"
   puts "   – Movie.search_by(\"genres\",\"comedy\")"
+  puts "To search movies by a combination of genre, actor or director:"
+  puts "   – Movie.cross_reference(\"director\",\"Wes Anderson\",\"actors\",\"Bill Murray\")"
   puts "To find movies with incomplete information:"
   puts "   – Movie.find_incomplete"
   puts "To delete a movie:"

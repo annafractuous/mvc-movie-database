@@ -42,16 +42,6 @@ class Movie
     "#{title} has been deleted from your movie collection"
   end
 
-# THOUGHTS
-# if I initialize each movie with its IMDB genres, do I then immediately create
-# a new instance of the Genre class for each of them?
-# add your own notes
-# add your own genres?
-# add personal rating in addition to IMDB one
-# add your own actors that IMDB doesn't mention
-# search by length
-
-
   def initialize(title)
 
     m = Omdb::Api.new.fetch(title)

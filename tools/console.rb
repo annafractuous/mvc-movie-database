@@ -1,10 +1,15 @@
 require 'pry'
+require 'imdb'
+require 'omdb'
 require_relative '../config/environment.rb'
 require_relative 'seed.rb'
 
 def reload!
   load('../config/environment.rb')
 end
+
+# i = Omdb::Api.new.search('Into the Wild')
+# puts i.inspect
 
 def movie_help
   puts "To see a list of all your movies, actors, directors or genres:"

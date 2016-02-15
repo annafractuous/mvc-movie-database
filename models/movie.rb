@@ -2,7 +2,7 @@ class Movie
 
   extend ClassModule
 
-  attr_reader :title, :actors, :director, :genres
+  attr_reader :title, :actors, :director, :genres, :length, :rating
 
   @@all = []
 
@@ -21,6 +21,8 @@ class Movie
     self.all.select { |movie| movie.send(aspect).include?(name) }
   end
 
+# Movie.cross_reference("actors", "Bill Murray", "director", "Wes Anderson")
+# returns an array
   def self.cross_reference(aspect1, name1, aspect2, name2)
     self.search_by(aspect1, name1) & self.search_by(aspect2, name2)
   end
@@ -32,7 +34,7 @@ class Movie
   end
 
   def self.delete(title)
-    doomed_film = Movie.select_by_title(title)
+    doomed_film = Movie.find_by_title(title)
     Director.find_and_delete(doomed_film.director, title)
     doomed_film.actors.each { |name| Actor.find_and_delete(name, title) }
     doomed_film.genres.each { |name| Genre.find_and_delete(name, title) }
@@ -40,33 +42,56 @@ class Movie
     "#{title} has been deleted from your movie collection"
   end
 
+# THOUGHTS
+# if I initialize each movie with its IMDB genres, do I then immediately create
+# a new instance of the Genre class for each of them?
+# add your own notes
+# add your own genres?
+# add personal rating in addition to IMDB one
+# add your own actors that IMDB doesn't mention
+# search by length
+
+
   def initialize(title)
-    @title = title
-    @director = "Unknown"
-    @actors = []
-    @genres = []
+
+    m = Omdb::Api.new.fetch(title)
+
+    @title = m[:movie].title
+    @director = m[:movie].director
+    @actors = m[:movie].actors.split(", ")
+    @genres = m[:movie].genre.split(", ")
+    @rating = m[:movie].metascore.to_i
+    @length = m[:movie].runtime
+    @year = m[:movie].year
+
+    @personal_rating = 0
+    @personal_notes = ""
+
     @@all << self
+    self.add_genres(genres)
+    self.add_actors(actors)
+    self.add_director(@director)
   end
 
-  def director=(name)
-    @director = name
+  def add_director(name)
     director = Director.find_by_name(name) || Director.new(name)
     director.movies << self.title
   end
 
   def add_genres(*genres)
-    genres.each do |genre|
-      self.genres << genre
+    genres.flatten.each do |genre|
+      genre.capitalize!
+      self.genres << genre if !self.genres.include?(genre)
       genre = Genre.find_by_name(genre) || Genre.new(genre)
-      genre.movies << self.title
+      genre.movies << self.title if !genre.movies.include?(self.title)
     end
   end
 
   def add_actors(*actors)
-    actors.each do |actor|
-      self.actors << actor
+    actors.flatten.each do |actor|
+      self.actors << actor if !self.actors.include?(actor)
       actor = Actor.find_by_name(actor) || Actor.new(actor)
-      actor.movies << self.title
+      actor.movies << self.title if !actor.movies.include?(self.title)
     end
   end
 

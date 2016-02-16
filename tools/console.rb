@@ -1,15 +1,15 @@
 require 'pry'
-require 'imdb'
 require 'omdb'
 require_relative '../config/environment.rb'
 require_relative 'seed.rb'
 
+# THOUGHTS
+# update movie_help list of commands
+# add CLI interface
+
 def reload!
   load('../config/environment.rb')
 end
-
-# i = Omdb::Api.new.search('Into the Wild')
-# puts i.inspect
 
 def movie_help
   puts "To see a list of all your movies, actors, directors or genres:"
@@ -24,8 +24,6 @@ def movie_help
   puts "   – Movie.search_by(\"genres\",\"comedy\")"
   puts "To search movies by a combination of genre, actor or director:"
   puts "   – Movie.cross_reference(\"director\",\"Wes Anderson\",\"actors\",\"Bill Murray\")"
-  puts "To find movies with incomplete information:"
-  puts "   – Movie.find_incomplete"
   puts "To delete a movie:"
   puts "   – Movie.delete(\"Monster-in-Law\")"
   "Let's work on your movie database!"
@@ -33,7 +31,9 @@ end
 
 # Executable code here
 puts "Welcome to your personal movie database!"
-puts "Type a command, or type \"movie_help\" to see a list of what you can do."
+puts "Type \"movie_help\" to see a list of what you can do."
+puts "Would you like to add or search your movies?"
+
 
 
 Pry.start
